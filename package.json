@@ -1,0 +1,19 @@
+{
+  "name": "crossy-road",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kbuchinskiy/crossy-road.git"
+  },
+  "author": "Kirill Buchinskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kbuchinskiy/crossy-road/issues"
+  },
+  "homepage": "https://github.com/kbuchinskiy/crossy-road#readme"
+}
