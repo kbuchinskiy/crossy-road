@@ -33,7 +33,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       {
-        from: "./assets/**/**",
+        from: "./images/**/**",
         flatten: true
       },
       {

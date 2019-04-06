@@ -1,4 +1,4 @@
-export { hitTestRectangle, keyboard };
+export { hitTestRectangle, keyboard , getRandomInt};
 
 function hitTestRectangle(r1, r2) {
   //Define the variables we'll need to calculate
@@ -49,15 +49,15 @@ function hitTestRectangle(r1, r2) {
 function keyboard(keyCode) {
   let key = {};
   key.code = keyCode;
-  key.isDown = false;
+  key.isDown = false; 
   key.isUp = true;
   key.press = undefined;
   key.release = undefined;
   //The `downHandler`
   key.downHandler = event => {
-    if (event.keyCode === key.code) {      
+    if (event.keyCode === key.code) {
       if (key.isUp && key.press) key.press();
-      key.isDown = true;
+      key.isDown = true; 
       key.isUp = false;
     }
     event.preventDefault();
@@ -77,4 +77,8 @@ function keyboard(keyCode) {
   window.addEventListener("keydown", key.downHandler.bind(key), false);
   window.addEventListener("keyup", key.upHandler.bind(key), false);
   return key;
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

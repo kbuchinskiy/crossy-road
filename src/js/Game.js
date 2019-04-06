@@ -1,11 +1,16 @@
 import * as PIXI from "pixi.js";
 import { hitTestRectangle } from "./utils";
 import Player from "./Player.js";
+import Road from "./Road.js";
 
 import playerImage from "../images/cat.png";
+import roadImage from "../images/road.jpg";
+import carImage from "../images/car.png";
 
 export default class Game {
   constructor(parentDomElem) {
+    this._setup = this._setup.bind(this);
+
     this.app = new PIXI.Application({
       width: 600,
       height: 400,
@@ -13,70 +18,58 @@ export default class Game {
       transparent: false,
       resolution: 1
     });
+
+    this.app.renderer.backgroundColor = 0x9999999;
     this.state;
-    this.playerSprite;
-    this.box;
-    this.message;
-
-    this.setup = this.setup.bind(this);
-
     parentDomElem.appendChild(this.app.view);
+    PIXI.loader.add([playerImage, roadImage, carImage]).load(this._setup);
+  }
+  _addRoad(Road) {
+    this.road = new Road(carImage);
+    this.roadContainer = this.road.container;
+    this.roadContainer.width = this.app.renderer.view.width;
+    this.roadContainer.height = 34;
 
-    PIXI.loader.add(playerImage).load(this.setup);
+    this.app.stage.addChild(this.roadContainer);
   }
 
-  setup() {
-    this.playerSprite = new Player(playerImage, 5).sprite;
+  _addPlayer(Player) {
+    this.player = new Player(playerImage, 5);
+    this.playerSprite = this.player.sprite;
     this._setPlayerInitialProps();
 
-    this.box = new PIXI.Graphics();
-    this.box.beginFill(0xccff99);
-    this.box.drawRect(0, 0, 64, 64);
-    this.box.endFill();
-    this.box.x = 120;
-    this.box.y = 96;
-
-    this.app.stage.addChild(this.box);
-
     this.app.stage.addChild(this.playerSprite);
-
-    //Create the text sprite
-    let style = new PIXI.TextStyle({
-      fontFamily: "sans-serif",
-      fontSize: 18,
-      fill: "white"
-    });
-    this.message = new PIXI.Text("No collision...", style);
-    this.message.position.set(8, 8);
-
-    this.app.stage.addChild(this.message);
-    //Set the game state
-    this.state = this.play;
-
-    this.app.ticker.add(delta => this.gameLoop(delta));
   }
 
-  gameLoop(delta) {
+  _setup() {
+    this._addPlayer(Player);
+    this._addRoad(Road);
+
+    this.state = this.play;
+    this.app.ticker.add(delta => this._gameLoop(delta));
+  }
+
+  _gameLoop(delta) {
     this.state(delta);
   }
 
   play(delta) {
     this.playerSprite.x += this.playerSprite.vx;
     this.playerSprite.y += this.playerSprite.vy;
-
     this._disablePlayerDisappearance();
+    this.road.update(this.app.renderer.width);
 
-    if (hitTestRectangle(this.playerSprite, this.box)) {
-      this.message.text = "hit!";
-      this.box.tint = 0xff3300;
-    } else {
-      this.message.text = "No collision...";
-      this.box.tint = 0xccff99;
-    }
+    this.road.carsList.forEach(car => {
+      if (hitTestRectangle(this.playerSprite, car)) {
+        this._setPlayerInitialProps();
+      }
+    });
   }
 
   _setPlayerInitialProps() {
-    this.playerSprite.scale.set(0.5, 0.5);
+    this.playerSprite.width = 32;
+    this.playerSprite.height = 32;
+
     const playerY = this.app.renderer.view.height - this.playerSprite.height;
     const playerX = this.app.renderer.view.width / 2;
 

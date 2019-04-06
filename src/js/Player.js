@@ -8,7 +8,7 @@ export default class Player {
   constructor(playerImage, speed) {
     this.sprite = new PIXI.Sprite(PIXI.loader.resources[playerImage].texture);
     this._initControls();
-    this.speed = speed;
+    this.speed = speed; 
 
     // this.onKeyDown = this.onKeyDown.bind(this);
     // document.addEventListener("keydown", this.onKeyDown);
