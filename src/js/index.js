@@ -1,4 +1,21 @@
-
 import Game from "./Game";
 
-new Game(document.body);
+const config = {
+  attempts: 3,
+  hurdles: [
+    "road",
+    "river",
+    "road",
+    "treeField",
+    "road",
+    "river",
+    "road",
+    "treeField",
+    "road",
+    "treeField"
+  ]
+};
+
+const crossyRoad = new Game(config);
+
+document.body.appendChild(crossyRoad.app.view);

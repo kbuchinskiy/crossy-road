@@ -1,15 +1,24 @@
 import * as PIXI from "pixi.js";
 import { hitTestRectangle } from "./utils";
 import Player from "./Player.js";
-import Road from "./Road.js";
+import DynamicHurdle from "./DynamicHurdle";
+import StaticHurdle from "./StaticHurdle";
 
 import playerImage from "../images/cat.png";
-import roadImage from "../images/road.jpg";
+import roadBg from "../images/road.jpg";
+import riverBg from "../images/water.jpg";
+import treeFieldBg from "../images/grass.jpg";
 import carImage from "../images/car.png";
+import raftImage from "../images/raft.jpg";
+import treeImage from "../images/tree.png";
 
 export default class Game {
-  constructor(parentDomElem) {
-    this._setup = this._setup.bind(this);
+  constructor(config) {
+    this.setup = this.setup.bind(this);
+    this.config = config;
+    this.config.hurdles.reverse();
+
+    this.hurdles = [];
 
     this.app = new PIXI.Application({
       width: 600,
@@ -21,52 +30,62 @@ export default class Game {
 
     this.app.renderer.backgroundColor = 0x9999999;
     this.state;
-    parentDomElem.appendChild(this.app.view);
-    PIXI.loader.add([playerImage, roadImage, carImage]).load(this._setup);
-  }
-  _addRoad(Road) {
-    this.road = new Road(carImage);
-    this.roadContainer = this.road.container;
-    this.roadContainer.width = this.app.renderer.view.width;
-    this.roadContainer.height = 34;
-
-    this.app.stage.addChild(this.roadContainer);
-  }
-
-  _addPlayer(Player) {
-    this.player = new Player(playerImage, 5);
-    this.playerSprite = this.player.sprite;
-    this._setPlayerInitialProps();
-
-    this.app.stage.addChild(this.playerSprite);
+    PIXI.loader
+      .add([
+        playerImage,
+        roadBg,
+        riverBg,
+        treeFieldBg,
+        carImage,
+        raftImage,
+        treeImage
+      ])
+      .load(this.setup);
   }
 
-  _setup() {
-    this._addPlayer(Player);
-    this._addRoad(Road);
+  setup() {
+    this.genereteHurdles();
+    this.addPlayer(Player);
 
     this.state = this.play;
-    this.app.ticker.add(delta => this._gameLoop(delta));
+    this.app.ticker.add(delta => this.gameLoop(delta));
   }
 
-  _gameLoop(delta) {
+  gameLoop(delta) {
     this.state(delta);
   }
 
   play(delta) {
+    this.updatePlayer();
+    this.disablePlayerDisappearance();
+    this.updateDynamicObstalces();
+
+    this.hurdles.forEach(hurdle => {
+      if (hitTestRectangle(this.playerSprite, hurdle.container)) {
+        this.setPlayerInitialProps();
+      }
+    });
+  }
+  addPlayer() {
+    this.player = new Player(playerImage, 5);
+    this.playerSprite = this.player.sprite;
+    this.setPlayerInitialProps();
+    this.app.stage.addChild(this.playerSprite);
+  }
+  updatePlayer() {
     this.playerSprite.x += this.playerSprite.vx;
     this.playerSprite.y += this.playerSprite.vy;
-    this._disablePlayerDisappearance();
-    this.road.update(this.app.renderer.width);
+  }
 
-    this.road.carsList.forEach(car => {
-      if (hitTestRectangle(this.playerSprite, car)) {
-        this._setPlayerInitialProps();
+  updateDynamicObstalces() {
+    this.hurdles.forEach(hurdle => {
+      if (!hurdle.static) {
+        hurdle.update();
       }
     });
   }
 
-  _setPlayerInitialProps() {
+  setPlayerInitialProps() {
     this.playerSprite.width = 32;
     this.playerSprite.height = 32;
 
@@ -80,7 +99,7 @@ export default class Game {
     this.playerSprite.vy = 0;
   }
 
-  _disablePlayerDisappearance() {
+  disablePlayerDisappearance() {
     let playerPosition = this.playerSprite.position;
     let topBorderTouch = playerPosition.y <= 0;
     let rightBorderTouch =
@@ -104,5 +123,30 @@ export default class Game {
     if (leftBorderTouch) {
       playerPosition.x = 0;
     }
+  }
+
+  genereteHurdles() {
+    const hurdlesList = this.config.hurdles;
+
+    hurdlesList.forEach((hurdleType, index) => {
+      let hurdle;
+      switch (hurdleType) {
+        case "road":
+          hurdle = new DynamicHurdle(roadBg, carImage);
+          break;
+        case "river":
+          hurdle = new DynamicHurdle(riverBg, raftImage);
+          break;
+        case "treeField":
+          hurdle = new StaticHurdle(treeFieldBg, treeImage);
+          hurdle.static = true;
+          break;
+      }
+      hurdle.type = hurdleType;
+      this.hurdles.push(hurdle);
+
+      hurdle.container.y = index * 32 + 32;
+      this.app.stage.addChild(hurdle.container);
+    });
   }
 }
