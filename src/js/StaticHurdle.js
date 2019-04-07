@@ -9,7 +9,7 @@ export default class StaticHurdle {
     );
 
     this.container.addChild(background);
-    this.staticItems = [];
+    this.items = [];
     this.initStaticItems(staticItemImage);
   }
 
@@ -22,8 +22,11 @@ export default class StaticHurdle {
       );
 
       staticItem.x = getRandomInt(i * staticItem.width, 600 - staticItem.width);
-      this.container.addChild(staticItem);
-      this.staticItems.push(staticItem);
+      
+      if (!this.items.some(item => hitTestRectangle(staticItem, item, true))) {
+        this.items.push(staticItem);
+        this.container.addChild(staticItem);
+      }
     }
   }
 }

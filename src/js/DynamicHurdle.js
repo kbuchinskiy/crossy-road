@@ -11,7 +11,8 @@ export default class DynamicHurdle {
     );
 
     this.container.addChild(background);
-    this.dynamicItems = [];
+    this.items = [];
+    this.backroundTexture = background;
     this.direction = Math.random() < 0.5 ? -1 : 1;
     this.initDynamicItems(dynamicItemImage);
   }
@@ -32,12 +33,12 @@ export default class DynamicHurdle {
         dynamicItem.anchor.x = 1;
       }
       this.container.addChild(dynamicItem);
-      this.dynamicItems.push(dynamicItem);
-    }, getRandomInt(1, 3) * 1000);
+      this.items.push(dynamicItem);
+    }, getRandomInt(2, 4) * 1000);
   }
 
   update(rendererWidth) {
-    this.dynamicItems.forEach((dynamicItem, index, array) => {
+    this.items.forEach((dynamicItem, index, array) => {
       dynamicItem.position.x += 2 * this.direction;
 
       if (this.direction > 0) {
@@ -51,9 +52,9 @@ export default class DynamicHurdle {
       }
     });
 
-    function removeDynamicItem(dynamicItem, dynamicItems) {
+    function removeDynamicItem(dynamicItem, items) {
       dynamicItem.destroy();
-      dynamicItems.splice(0, 1);
+      items.splice(0, 1);
     }
   }
 }
