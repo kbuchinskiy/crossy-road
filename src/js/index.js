@@ -16,6 +16,7 @@ const config = {
   ]
 };
 
+
 const crossyRoad = new Game(config);
 
 document.body.appendChild(crossyRoad.app.view);
