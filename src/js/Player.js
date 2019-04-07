@@ -10,8 +10,8 @@ export default class Player {
     this._initControls();
     this.speed = speed; 
 
-    // this.onKeyDown = this.onKeyDown.bind(this);
-    // document.addEventListener("keydown", this.onKeyDown);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    document.addEventListener("keydown", this.onKeyDown);
   }
 
   onKeyDown(key) {
@@ -23,14 +23,13 @@ export default class Player {
       this.sprite.position.y += this.sprite.height;
     }
 
-    if (key.keyCode === 65 || key.keyCode === 37) {
-      this.sprite.position.x -= this.sprite.height;
-      console.log(key);
-    }
+    // if (key.keyCode === 65 || key.keyCode === 37) {
+    //   this.sprite.position.x -= this.sprite.height;
+    // }
 
-    if (key.keyCode === 68 || key.keyCode === 39) {
-      this.sprite.position.x += this.sprite.height;
-    }
+    // if (key.keyCode === 68 || key.keyCode === 39) {
+    //   this.sprite.position.x += this.sprite.height;
+    // }
   }
 
   _initControls() {
@@ -45,15 +44,15 @@ export default class Player {
       }
     }.bind(this);
 
-    up.press = function() {
-      this.sprite.vy = -this.speed;
-      this.sprite.vx = 0;
-    }.bind(this);
-    up.release = function() {
-      if (!down.isDown && this.sprite.vx === 0) {
-        this.sprite.vy = 0;
-      }
-    }.bind(this);
+    // up.press = function() {
+    //   this.sprite.vy = -this.speed;
+    //   this.sprite.vx = 0;
+    // }.bind(this);
+    // up.release = function() {
+    //   if (!down.isDown && this.sprite.vx === 0) {
+    //     this.sprite.vy = 0;
+    //   }
+    // }.bind(this);
 
     right.press = function() {
       this.sprite.vx = this.speed;
@@ -65,14 +64,14 @@ export default class Player {
       }
     }.bind(this);
 
-    down.press = function() {
-      this.sprite.vy = this.speed;
-      this.sprite.vx = 0;
-    }.bind(this);
-    down.release = function() {
-      if (!up.isDown && this.sprite.vx === 0) {
-        this.sprite.vy = 0;
-      }
-    }.bind(this);
+    // down.press = function() {
+    //   this.sprite.vy = this.speed;
+    //   this.sprite.vx = 0;
+    // }.bind(this);
+    // down.release = function() {
+    //   if (!up.isDown && this.sprite.vx === 0) {
+    //     this.sprite.vy = 0;
+    //   }
+    // }.bind(this);
   }
 }
