@@ -3,7 +3,7 @@ import Game from "./Game";
 const config = {
   attempts: 3,
   hurdles: [
-    "road",
+    "treeField",
     "river",
     "road",
     "treeField",
@@ -18,5 +18,4 @@ const config = {
 
 
 const crossyRoad = new Game(config);
-
 document.body.appendChild(crossyRoad.app.view);
