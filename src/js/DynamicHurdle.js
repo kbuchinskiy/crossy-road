@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
-import { getRandomInt } from "./utils.js";
+import {
+  getRandomInt
+} from "./utils.js";
 
 export default class DynamicHurdle {
   constructor(backgroundImage, dynamicItemImage) {
@@ -12,29 +14,37 @@ export default class DynamicHurdle {
 
     this.container.addChild(background);
     this.items = [];
-    this.backroundTexture = background;
+    this.backgroundTexture = background;
     this.direction = Math.random() < 0.5 ? -1 : 1;
     this.initDynamicItems(dynamicItemImage);
   }
 
   initDynamicItems(dynamicItemImage) {
     window.setInterval(() => {
-      const dynamicItem = new PIXI.Sprite(
-        PIXI.loader.resources[dynamicItemImage].texture
-      );
 
-      dynamicItem.y = 0;
+      setTimeout(() => {
+        const dynamicItem = new PIXI.Sprite(
+          PIXI.loader.resources[dynamicItemImage].texture
+        );
 
-      if (this.direction > 0) {
-        dynamicItem.x = -64;
-      } else {
-        dynamicItem.x = 400 + dynamicItem.width * 4;
-        dynamicItem.scale.x = -1;
-        dynamicItem.anchor.x = 1;
-      }
-      this.container.addChild(dynamicItem);
-      this.items.push(dynamicItem);
-    }, getRandomInt(2, 4) * 1000);
+        dynamicItem.y = 0;
+
+        if (this.direction > 0) {
+          dynamicItem.x = -64 -
+            getRandomInt(
+              dynamicItem.height,
+              dynamicItem.height * 2
+            );
+        } else {
+          dynamicItem.x = 400 + dynamicItem.width * 4;
+          dynamicItem.scale.x = -1;
+          dynamicItem.anchor.x = 1;
+        }
+        this.container.addChild(dynamicItem);
+        this.items.push(dynamicItem);
+      }, getRandomInt(1, 3) * 1000);
+
+    }, 3000);
   }
 
   update(rendererWidth) {
