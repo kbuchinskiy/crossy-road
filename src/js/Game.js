@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
-import { hitTestRectangle } from "./utils";
+import {
+  hitTestRectangle
+} from "./utils";
 import Player from "./Player.js";
 import DynamicHurdle from "./DynamicHurdle";
 import StaticHurdle from "./StaticHurdle";
@@ -23,6 +25,7 @@ export default class Game {
     this.hurdles = [];
     this.finishLine;
     this.attemptsBar;
+    this.state;
 
     this.app = new PIXI.Application({
       width: 600,
@@ -31,9 +34,11 @@ export default class Game {
       transparent: false,
       resolution: 1
     });
+    console.log(this.app);
+
 
     this.app.renderer.backgroundColor = 0x9999999;
-    this.state;
+
     PIXI.loader
       .add([
         playerImage,
@@ -63,25 +68,28 @@ export default class Game {
     this.state(delta);
   }
 
-  removeAttempt() {
-    let attempts = this.attemptsBar.children;
-    attempts[attempts.length - 1].destroy();
-  }
+  gameOver(win) {
+    this.app.ticker.stop();
 
+    if (win) {
+      alert("You win");
+    } else {
+      alert("You lost");
+    }
+
+    location.reload();
+  }
   play(delta) {
     if (this.attemptsAmount === 0) {
-      this.app.ticker.stop();
-      alert("You lost");
-      location.reload();
+      this.gameOver(false)
+
     } else {
       this.updatePlayer();
       this.disablePlayerDisappearance();
       this.updateDynamicObstalces();
 
       if (hitTestRectangle(this.playerSprite, this.finishLine)) {
-        alert("You win");
-        this.app.ticker.stop();
-        location.reload();
+        this.gameOver(true)
       }
 
       this.hurdles.forEach(hurdle => {
@@ -90,6 +98,13 @@ export default class Game {
         }
       });
     }
+  }
+
+  deleteAttempt() {
+    let attempts = this.attemptsBar.children;
+    this.attemptsAmount--;
+    attempts[attempts.length - 1].destroy();
+    this.setPlayerInitialProps();
   }
 
   hurdleHitHandler(hurdle) {
@@ -102,29 +117,36 @@ export default class Game {
 
   staticItemHitHandler(hurdle) {
     hurdle.items.forEach(item => {
-      if (this.playerSprite.y === hurdle.container.y) {
-        if (hitTestRectangle(this.playerSprite, item, true)) {
-        }
+      if (hitTestRectangle(this.playerSprite, item, true)) {
+        this.playerSprite.y = this.playerSprite.prevY;
+        this.playerSprite.x = this.playerSprite.prevX;
       }
     });
   }
 
   dynamicItemHitHandler(hurdle) {
+    // road
     if (hurdle.type === "road") {
       hurdle.items.forEach(item => {
         if (hitTestRectangle(this.playerSprite, item, true)) {
-          this.attemptsAmount--;
-          this.removeAttempt();
-          this.setPlayerInitialProps();
+          this.deleteAttempt();
         }
       });
-    } else if (hurdle.type === "river") {
+    }
+    // river
+    else if (hurdle.type === "river") {
+      let itemHit = false;
       hurdle.items.forEach(item => {
         if (hitTestRectangle(this.playerSprite, item, true)) {
           this.playerSprite.x =
             item.x + item.width / 2 - this.playerSprite.width / 2;
+          itemHit = true;
         }
       });
+
+      if (itemHit) return;
+
+      this.deleteAttempt();
     }
   }
 
