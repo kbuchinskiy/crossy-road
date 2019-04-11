@@ -3,7 +3,7 @@ var CopyWebpackPlugin = require("copy-webpack-plugin-advanced");
 
 module.exports = {
   context: path.resolve(__dirname, "src"),
-  entry: ["./js/index.js"],
+  entry: ["./js/index.ts"],
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "app.bundle.js",
@@ -12,17 +12,24 @@ module.exports = {
   devServer: {
     contentBase: path.resolve(__dirname, "src")
   },
+  resolve: {
+    extensions: ['.ts', '.js']
+  },
   module: {
-    rules: [
+    rules: [{
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: "babel-loader",
-            options: { presets: ["es2015", "es2016"] }
+        use: [{
+          loader: "babel-loader",
+          options: {
+            presets: ["es2015", "es2016"]
           }
-        ]
+        }]
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -31,8 +38,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new CopyWebpackPlugin([
-      {
+    new CopyWebpackPlugin([{
         from: "./images/**/**",
         flatten: true
       },
