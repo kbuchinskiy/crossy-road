@@ -1,6 +1,6 @@
 import "pixi.js";
-import './Player';
 import { Player } from "./Player";
+import { ZoneStatic } from "./ZoneStatic";
 
 const playerImage = require("../images/cat.png");
 const roadBg = require("../images/road.jpg");
@@ -11,7 +11,6 @@ const carImage = require("../images/car.png");
 const raftImage = require("../images/raft.jpg");
 const treeImage = require("../images/tree.png");
 const heartImage = require("../images/heart.png");
-
 
 export default class Game {
   private app: PIXI.Application;
@@ -49,6 +48,8 @@ export default class Game {
     this.initPlayer(playerImage);
     this.setPlayerInitialPosition();
 
+    this.addZone();
+
     this.app.ticker.add((delta: number) => this.gameLoop(delta));
   }
 
@@ -57,9 +58,13 @@ export default class Game {
   }
 
   private initPlayer(playerImage: string): void {
-    const playerTexture = PIXI.Texture.fromImage(playerImage);
-    this.player = new Player(32, 32, playerTexture);
+    this.player = new Player(32, 32, playerImage);
     this.app.stage.addChild(this.player);
+  }
+
+  private addZone(): void {
+    const zone = new ZoneStatic(roadBg, true);
+    this.app.stage.addChild(zone);
   }
 
   setPlayerInitialPosition(): void {
