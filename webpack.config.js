@@ -22,16 +22,6 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: "babel-loader",
-          options: {
-            presets: ["es2015", "es2016"]
-          }
-        }]
-      },
-      {
         test: /\.(jpe?g|png|gif|svg)$/i,
         loader: "file-loader"
       }
