@@ -17,5 +17,8 @@ const config = {
 };
 
 
-const crossyRoad = new Game(config);
-document.body.appendChild(crossyRoad.app.view);
+const crossyRoad = new Game();
+
+// setTimeout(() => {
+//   crossyRoad.ba
+// }, 200);
