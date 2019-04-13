@@ -1,9 +1,9 @@
 import "pixi.js";
-import { Player } from "./Player";
-import { Zone } from "./Zone";
-import { ZoneStatic } from "./ZoneStatic";
-import { ZoneDynamic } from "./ZoneDynamic";
-import { ZoneFactory } from "./ZoneFactory";
+import Player from "./Player";
+import Zone from "./Zone";
+import ZoneStatic from "./ZoneStatic";
+import ZoneDynamic from "./ZoneDynamic";
+import ZoneFactory from "./ZoneFactory";
 
 const playerImage = require("../images/cat.png");
 const roadBg = require("../images/road.jpg");
@@ -20,7 +20,7 @@ export default class Game {
   private player: PIXI.Sprite;
   private readonly stageWidth = 600;
   private readonly stageHight = 400;
-  private readonly stageColor = 0xeeeeeee;
+  private readonly stageColor = 0x999999;
 
   private zones: Zone[] = [];
 
@@ -70,7 +70,7 @@ export default class Game {
   }
 
   private mountPlayer(playerImage: string): void {
-    this.player = new Player(32, 32, playerImage);
+    this.player = new Player({ height: 32, width: 32, image: playerImage });
     this.setPlayerInitialPosition();
 
     this.app.stage.addChild(this.player);
@@ -80,7 +80,7 @@ export default class Game {
     const zoneFactory = new ZoneFactory();
 
     this.zonesList.forEach((type, index) => {
-      const zone = zoneFactory.createZone(type, roadBg);
+      const zone = zoneFactory.createZone(type);
       zone.y = index * zone.height;
       this.zones.push(zone);
 

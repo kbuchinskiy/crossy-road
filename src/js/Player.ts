@@ -1,11 +1,13 @@
-export class Player extends PIXI.Sprite {
-    direction: number = 0;
-    speed: number = 0;
 
-    constructor(height: number, width: number, playerImage: string) {
-        super(PIXI.Texture.fromImage(playerImage));
+import { SpriteProps } from './utils';
+export default class Player extends PIXI.Sprite {
+  direction: number = 0;
+  speed: number = 0;
 
-        this.height = height;
-        this.width = width;
-    }
+  constructor(props: SpriteProps) {
+    super(PIXI.Texture.fromImage(props.image));
+
+    this.height = props.height;
+    this.width = props.width;
+  }
 }
