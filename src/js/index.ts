@@ -2,22 +2,22 @@ import Game from "./Game";
 
 const config = {
   attempts: 3,
-  hurdles: [
-    "treeField",
+  zones: [
+    "tree",
     "river",
     "road",
-    "treeField",
+    "tree",
     "road",
     "river",
     "road",
-    "treeField",
+    "tree",
     "road",
-    "treeField"
+    "tree"
   ]
 };
 
 
-const crossyRoad = new Game();
+new Game(config.zones);
 
 // setTimeout(() => {
 //   crossyRoad.ba

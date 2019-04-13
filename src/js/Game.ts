@@ -1,11 +1,14 @@
 import "pixi.js";
 import { Player } from "./Player";
+import { Zone } from "./Zone";
 import { ZoneStatic } from "./ZoneStatic";
+import { ZoneDynamic } from "./ZoneDynamic";
+import { ZoneFactory } from "./ZoneFactory";
 
 const playerImage = require("../images/cat.png");
 const roadBg = require("../images/road.jpg");
 const riverBg = require("../images/water.jpg");
-const treeFieldBg = require("../images/grass.jpg");
+const treeBg = require("../images/grass.jpg");
 const finishLineImage = require("../images/finishLine.jpg");
 const carImage = require("../images/car.png");
 const raftImage = require("../images/raft.jpg");
@@ -19,7 +22,10 @@ export default class Game {
   private readonly stageHight = 400;
   private readonly stageColor = 0xeeeeeee;
 
-  constructor() {
+  private zones: Zone[] = [];
+
+
+  constructor(private zonesList: string[]) {
     this.setup = this.setup.bind(this);
 
     this.app = new PIXI.Application(this.stageWidth, this.stageHight, {
@@ -33,7 +39,7 @@ export default class Game {
         playerImage,
         roadBg,
         riverBg,
-        treeFieldBg,
+        treeBg,
         finishLineImage,
         carImage,
         raftImage,
@@ -45,26 +51,42 @@ export default class Game {
   }
 
   private setup(): void {
-    this.initPlayer(playerImage);
+    this.mountPlayer(playerImage);
+    this.addZones();
+
+    this.app.ticker.add(() => this.gameLoop());
+  }
+
+  private gameLoop(): void {
+    this.updateDynamicZones();
+  }
+
+  updateDynamicZones(): void {
+    this.zones.forEach(zone => {
+      if (zone instanceof ZoneDynamic) {
+        zone.updateItems();
+      }
+    })
+  }
+
+  private mountPlayer(playerImage: string): void {
+    this.player = new Player(32, 32, playerImage);
     this.setPlayerInitialPosition();
 
-    this.addZone();
-
-    this.app.ticker.add((delta: number) => this.gameLoop(delta));
-  }
-
-  private gameLoop(delta): void {
-    // updated content
-  }
-
-  private initPlayer(playerImage: string): void {
-    this.player = new Player(32, 32, playerImage);
     this.app.stage.addChild(this.player);
   }
 
-  private addZone(): void {
-    const zone = new ZoneStatic(roadBg, true);
-    this.app.stage.addChild(zone);
+  private addZones(): void {
+    const zoneFactory = new ZoneFactory();
+
+    this.zonesList.forEach((type, index) => {
+      const zone = zoneFactory.createZone(type, roadBg);
+      zone.y = index * zone.height;
+      this.zones.push(zone);
+
+      this.app.stage.addChild(zone);
+    });
+
   }
 
   setPlayerInitialPosition(): void {
