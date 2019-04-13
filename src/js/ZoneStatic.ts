@@ -10,10 +10,10 @@ export class ZoneStatic extends Zone {
         super(backgroundImage, isSafe);
         this.itemsAmount = getRandomInt(3, 6);
 
-        this.initItems();
+        this.mountItems();
     }
 
-    private initItems() {
+    private mountItems() {
         for (let i = 0; i < this.itemsAmount; i++) {
             const item = new Item("../images/tree.png", 30, 32);
 
