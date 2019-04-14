@@ -67,6 +67,7 @@ function keyboard(keyCode) {
   key.release = undefined;
   //The `downHandler`
   key.downHandler = event => {
+    
     if (event.keyCode === key.code) {
       if (key.isUp && key.press) key.press();
       key.isDown = true;

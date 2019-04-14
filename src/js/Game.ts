@@ -19,6 +19,13 @@ const raftImage = require("../images/raft.jpg");
 const treeImage = require("../images/tree.png");
 const heartImage = require("../images/heart.png");
 
+enum keys {
+  left = 37,
+  up = 38,
+  right = 39,
+  down = 40,
+}
+
 export default class Game {
   private app: PIXI.Application;
   private player: Player;
@@ -41,6 +48,9 @@ export default class Game {
 
     document.body.appendChild(this.app.view);
 
+    this.onKeyDownHandler = this.onKeyDownHandler.bind(this);
+    document.addEventListener("keydown", this.onKeyDownHandler);
+
     PIXI.loader
       .add([
         playerImage,
@@ -54,6 +64,28 @@ export default class Game {
         heartImage
       ])
       .load(() => this.setup());
+
+  }
+
+  private onKeyDownHandler(key) {
+
+    if (key.keyCode === keys.up) {
+      this.player.prevX = this.player.x;
+    }
+
+    if (key.keyCode === keys.down) {
+      this.player.prevX = this.player.x;
+    }
+
+    if (key.keyCode === keys.left) {
+      this.player.prevY = this.player.y;
+      this.player.prevX = this.player.x;
+    }
+
+    if (key.keyCode === keys.right) {
+      this.player.prevY = this.player.y;
+      this.player.prevX = this.player.x;
+    }
 
   }
 
@@ -101,6 +133,7 @@ export default class Game {
         if (hitTestRectangle(this.player, item, true)) {
           this.player.x =
             item.x + item.width / 2 - this.player.width / 2;
+
           hit = true;
         }
       });
@@ -121,7 +154,8 @@ export default class Game {
   staticZoneHitHandler(zone) {
     zone.itemsContainer.children.forEach(item => {
       if (hitTestRectangle(this.player, item, true)) {
-        this.loseAttempt();
+        this.player.y = this.player.prevY;
+        this.player.x = this.player.prevX;
       }
     });
   }
@@ -139,12 +173,11 @@ export default class Game {
   }
 
   initSmoothMovements() {
-    const left = keyboard(37),
-      up = keyboard(38),
-      right = keyboard(39),
-      down = keyboard(40);
+    const left = keyboard(keys.left),
+      up = keyboard(keys.up),
+      right = keyboard(keys.right),
+      down = keyboard(keys.down);
 
-    // left
     left.press = () => {
       this.player.vx = -this.player.speed;
       this.player.vy = 0;
@@ -189,6 +222,7 @@ export default class Game {
     };
 
   }
+
 
   private checkAvailableAttempts() {
     if (this.attemptsBar.attemptsAvailable <= 0) {
