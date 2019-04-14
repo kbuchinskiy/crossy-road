@@ -1,15 +1,10 @@
 
-export { getRandomInt, hitTestRectangle, SpriteProps };
-
-interface SpriteProps {
-  image: string,
-  width: number,
-  height: number
-}
+export { getRandomInt, hitTestRectangle, keyboard };
 
 function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
 
 function hitTestRectangle(r1, r2, yHitDisabled?: boolean): boolean {
 
@@ -61,4 +56,37 @@ function hitTestRectangle(r1, r2, yHitDisabled?: boolean): boolean {
 
   //`hit` will be either `true` or `false`
   return hit;
+}
+
+function keyboard(keyCode) {
+  let key: any = {};
+  key.code = keyCode;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = undefined;
+  key.release = undefined;
+  //The `downHandler`
+  key.downHandler = event => {
+    if (event.keyCode === key.code) {
+      if (key.isUp && key.press) key.press();
+      key.isDown = true;
+      key.isUp = false;
+    }
+    event.preventDefault();
+  };
+
+  //The `upHandler`
+  key.upHandler = event => {
+    if (event.keyCode === key.code) {
+      if (key.isDown && key.release) key.release();
+      key.isDown = false;
+      key.isUp = true;
+    }
+    event.preventDefault();
+  };
+
+  //Attach event listeners
+  window.addEventListener("keydown", key.downHandler.bind(key), false);
+  window.addEventListener("keyup", key.upHandler.bind(key), false);
+  return key;
 }

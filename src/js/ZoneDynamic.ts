@@ -7,8 +7,8 @@ import { SpriteProps } from './SpriteItem';
 export default class ZoneDynamic extends Zone {
   private readonly direction: number = Math.random() < 0.5 ? -1 : 1;
 
-  constructor(backgroundImage: string, isSafe: boolean, stageWidth: number, spriteSettings: SpriteProps) {
-    super(backgroundImage, isSafe, stageWidth, spriteSettings);
+  constructor(backgroundImage: string, stageWidth: number, readonly isSafe, spriteSettings: SpriteProps) {
+    super(backgroundImage, stageWidth,  spriteSettings);
 
     this.itemsBuilder();
     this.updateItems();

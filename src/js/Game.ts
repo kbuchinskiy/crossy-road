@@ -1,11 +1,13 @@
 import "pixi.js";
+import Item from "./Item";
 import Player from "./Player";
 import Zone from "./Zone";
-// import ZoneStatic from "./ZoneStatic";
+import ZoneStatic from "./ZoneStatic";
 import ZoneDynamic from "./ZoneDynamic";
 import FinishLine from "./FinishLine";
 import AttemptsBar from "./AttemptsBar";
 import { ZoneFactory, zoneTypes } from "./ZoneFactory";
+import { hitTestRectangle, keyboard } from "./utils";
 
 const playerImage = require("../images/cat.png");
 const roadBg = require("../images/road.jpg");
@@ -19,8 +21,8 @@ const heartImage = require("../images/heart.png");
 
 export default class Game {
   private app: PIXI.Application;
-  private player: PIXI.Sprite;
-  private finishLine: PIXI.Sprite;
+  private player: Player;
+  private finishLine: FinishLine;
   private attemptsBar: AttemptsBar;
   private readonly stageWidth: number = 600;
   private readonly stageHight: number = 400;
@@ -56,17 +58,136 @@ export default class Game {
   }
 
   private setup(): void {
-    this.mountPlayer(playerImage);
     this.mountZones();
     this.mountFinishLine();
     this.mountAttemptsBar();
+    this.mountPlayer(playerImage);
+
+
+    this.initSmoothMovements();
 
     this.app.ticker.add(() => this.gameLoop());
   }
 
   private gameLoop(): void {
     this.updateDynamicZones();
+    this.preventPlayerDisappearance();
+    this.player.update();
+
+    // hits
+    this.finishLineHitHandler();
+    this.zonesHitHandler();
+
+  }
+
+  zonesHitHandler() {
+    this.zones.forEach(zone => {
+      if (hitTestRectangle(this.player, zone)) {
+        if (zone instanceof ZoneDynamic) {
+          this.dynamicZoneHitHandler(zone);
+        } else if (zone instanceof ZoneStatic) {
+          this.staticZoneHitHandler(zone);
+        }
+      }
+    })
+
+  }
+
+  dynamicZoneHitHandler(zone: ZoneDynamic) {
+    if (!zone.isSafe) {
+      let hit: boolean = false;
+
+      zone.itemsContainer.children.forEach((item: Item) => {
+        if (hitTestRectangle(this.player, item, true)) {
+          this.player.x =
+            item.x + item.width / 2 - this.player.width / 2;
+          hit = true;
+        }
+      });
+
+      if (hit) return;
+      this.loseAttempt();
+
+    } else {
+      zone.itemsContainer.children.forEach(item => {
+        if (hitTestRectangle(this.player, item, true)) {
+          this.loseAttempt();
+        }
+      });
+    }
+
+  }
+
+  staticZoneHitHandler(zone) {
+    zone.itemsContainer.children.forEach(item => {
+      if (hitTestRectangle(this.player, item, true)) {
+        this.loseAttempt();
+      }
+    });
+  }
+
+  loseAttempt() {
+    this.attemptsBar.removeAttempt();
     this.checkAvailableAttempts();
+    this.setPlayerInitialPosition();
+  }
+
+  finishLineHitHandler() {
+    if (hitTestRectangle(this.player, this.finishLine)) {
+      this.gameOver(true);
+    }
+  }
+
+  initSmoothMovements() {
+    const left = keyboard(37),
+      up = keyboard(38),
+      right = keyboard(39),
+      down = keyboard(40);
+
+    // left
+    left.press = () => {
+      this.player.vx = -this.player.speed;
+      this.player.vy = 0;
+    };
+    left.release = () => {
+      if (!right.isDown && this.player.vy === 0) {
+        this.player.vx = 0;
+      }
+    };
+
+    // up
+    up.press = () => {
+      this.player.y -= this.stepY;
+      this.player.vx = 0;
+    };
+    up.release = () => {
+      if (!down.isDown && this.player.vx === 0) {
+        this.player.vy = 0;
+      }
+    };
+
+    // right
+    right.press = () => {
+      this.player.vx = this.player.speed;
+      this.player.vy = 0;
+    };
+    right.release = () => {
+      if (!left.isDown && this.player.vy === 0) {
+        this.player.vx = 0;
+      }
+    };
+
+    // down
+    down.press = () => {
+      this.player.y += this.stepY;
+      this.player.vx = 0;
+    };
+    down.release = () => {
+      if (!up.isDown && this.player.vx === 0) {
+        this.player.vy = 0;
+      }
+    };
+
   }
 
   private checkAvailableAttempts() {
@@ -124,6 +245,25 @@ export default class Game {
     this.attemptsBar = new AttemptsBar(this.attemptsAmount, heartImage, 15);
     this.attemptsBar.y = this.attempsBarY;
     this.app.stage.addChild(this.attemptsBar);
+  }
+
+  preventPlayerDisappearance() {
+    // top border touch
+    if (this.player.y <= 0) {
+      this.player.y = 0;
+    }
+    // right border touch 
+    if (this.player.x >= this.stageWidth - this.player.width) {
+      this.player.x = this.stageWidth - this.player.width;
+    }
+    // bottom border touch 
+    if (this.player.y >= this.stageHight - this.player.height) {
+      this.player.y = this.stageHight - this.player.height;
+    }
+    // left border touch 
+    if (this.player.x <= 0) {
+      this.player.x = 0;
+    }
   }
 
   setPlayerInitialPosition(): void {

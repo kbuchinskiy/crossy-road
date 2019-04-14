@@ -5,9 +5,10 @@ import Item from './Item';
 import { SpriteProps } from './SpriteItem';
 export default class ZoneStatic extends Zone {
   readonly itemsAmount: number;
+  ;
 
-  constructor(backgroundImage: string, isSafe: boolean, readonly stageWidth, spriteSettings: SpriteProps) {
-    super(backgroundImage, isSafe, stageWidth, spriteSettings);
+  constructor(backgroundImage: string, readonly stageWidth, readonly itemIntersectionEnabled: boolean = false, spriteSettings: SpriteProps) {
+    super(backgroundImage, stageWidth, spriteSettings);
     this.itemsAmount = getRandomInt(3, 6);
 
     this.mountItems();
