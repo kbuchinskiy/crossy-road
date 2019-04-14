@@ -1,5 +1,5 @@
 
-import { SpriteItem } from './SpriteItem';
+import { SpriteItem, SpriteProps } from './SpriteItem';
 
 interface iAttemptsBar {
   readonly attemptsAmount: number,
@@ -8,7 +8,7 @@ interface iAttemptsBar {
 
 export default class AttemptsBar extends PIXI.Container implements iAttemptsBar {
   private _attemptsLeft: number;
-  constructor(readonly attemptsAmount: number, private readonly attemptIcon: string, private readonly spaceBetween: number) {
+  constructor(readonly attemptsAmount: number, private readonly spaceBetween: number, private readonly attemptItemSetting: SpriteProps) {
     super();
     this.mountAttempts();
     this._attemptsLeft = attemptsAmount;
@@ -16,7 +16,7 @@ export default class AttemptsBar extends PIXI.Container implements iAttemptsBar 
 
   private mountAttempts() {
     for (let i = 0; i < this.attemptsAmount; i++) {
-      const attemptItem = new SpriteItem({ image: this.attemptIcon, width: 10, height: 10 });
+      const attemptItem: SpriteItem = new SpriteItem({ image: this.attemptItemSetting.image, width: this.attemptItemSetting.width, height: this.attemptItemSetting.height });
       attemptItem.x = i * this.spaceBetween;
       this.addChild(attemptItem);
     }

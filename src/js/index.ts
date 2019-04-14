@@ -2,7 +2,7 @@ import Game from "./Game";
 import { zoneTypes } from "./ZoneFactory";
 
 const config = {
-  attempts: 5,
+  attempts: 3,
   zones: [
     zoneTypes.Road,
     zoneTypes.River,

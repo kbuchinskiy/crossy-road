@@ -26,7 +26,12 @@ enum keys {
   down = 40,
 }
 
-export default class Game {
+interface iGame {
+  gameOver(),
+  setPlayerInitialPosition()
+}
+
+export default class Game implements iGame {
   private app: PIXI.Application;
   private player: Player;
   private playerPrevX: number = 0;
@@ -41,7 +46,6 @@ export default class Game {
   private readonly attempsBarY: number = 0;
   private zones: Zone[] = [];
 
-
   constructor(readonly attemptsAmount, readonly zoneTypesList: zoneTypes[]) {
 
     this.app = new PIXI.Application(this.stageWidth, this.stageHight, {
@@ -49,9 +53,6 @@ export default class Game {
     });
 
     document.body.appendChild(this.app.view);
-
-    this.onKeyDownHandler = this.onKeyDownHandler.bind(this);
-    document.addEventListener("keydown", this.onKeyDownHandler);
 
     PIXI.loader
       .add([
@@ -66,6 +67,10 @@ export default class Game {
         heartImage
       ])
       .load(() => this.setup());
+
+    document.addEventListener("keydown", (key) => {
+      this.onKeyDownHandler(key);
+    });
 
   }
 
@@ -89,11 +94,10 @@ export default class Game {
     // hits
     this.finishLineHitHandler();
     this.zonesHitHandler();
-
   }
 
-  private zonesHitHandler() {
-    this.zones.forEach(zone => {
+  private zonesHitHandler(): void {
+    this.zones.forEach((zone: Zone) => {
       if (hitTestRectangle(this.player, zone)) {
         if (zone instanceof ZoneDynamic) {
           this.dynamicZoneHitHandler(zone);
@@ -105,7 +109,7 @@ export default class Game {
 
   }
 
-  private dynamicZoneHitHandler(zone: ZoneDynamic) {
+  private dynamicZoneHitHandler(zone: ZoneDynamic): void {
     if (!zone.isSafe) {
       let hit: boolean = false;
 
@@ -131,7 +135,7 @@ export default class Game {
 
   }
 
-  private staticZoneHitHandler(zone) {
+  private staticZoneHitHandler(zone): void {
     zone.itemsContainer.children.forEach(item => {
       if (hitTestRectangle(this.player, item, true)) {
         this.player.y = this.playerPrevY;
@@ -140,19 +144,19 @@ export default class Game {
     });
   }
 
-  private loseAttempt() {
+  private loseAttempt(): void {
     this.attemptsBar.removeAttempt();
     this.checkAvailableAttempts();
     this.setPlayerInitialPosition();
   }
 
-  private finishLineHitHandler() {
+  private finishLineHitHandler(): void {
     if (hitTestRectangle(this.player, this.finishLine)) {
       this.gameOver(true);
     }
   }
 
-  private onKeyDownHandler(key) {
+  private onKeyDownHandler(key): void {
 
     if (key.keyCode === keys.up) {
       this.playerPrevX = this.player.x;
@@ -174,7 +178,7 @@ export default class Game {
 
   }
 
-  private initSmoothMovements() {
+  private initSmoothMovements(): void {
     const left = keyboard(keys.left),
       up = keyboard(keys.up),
       right = keyboard(keys.right),
@@ -226,13 +230,13 @@ export default class Game {
   }
 
 
-  private checkAvailableAttempts() {
+  private checkAvailableAttempts(): void {
     if (this.attemptsBar.attemptsAvailable <= 0) {
       this.gameOver(false);
     }
   }
 
-  gameOver(win: boolean): void {
+  gameOver(win: boolean = false): void {
     this.app.ticker.stop();
     if (win) {
       alert('You win!');
@@ -278,7 +282,7 @@ export default class Game {
   }
 
   private mountAttemptsBar() {
-    this.attemptsBar = new AttemptsBar(this.attemptsAmount, heartImage, 15);
+    this.attemptsBar = new AttemptsBar(this.attemptsAmount, 15, { width: 10, height: 10, image: heartImage });
     this.attemptsBar.y = this.attempsBarY;
     this.app.stage.addChild(this.attemptsBar);
   }
