@@ -1,11 +1,11 @@
 import "pixi.js";
-import Item from "./Item";
 import Player from "./Player";
 import Zone from "./Zone";
 import ZoneStatic from "./ZoneStatic";
 import ZoneDynamic from "./ZoneDynamic";
 import FinishLine from "./FinishLine";
 import AttemptsBar from "./AttemptsBar";
+import { SpriteItem } from "./SpriteItem";
 import { ZoneFactory, zoneTypes } from "./ZoneFactory";
 import { hitTestRectangle, keyboard } from "./utils";
 
@@ -109,7 +109,7 @@ export default class Game {
     if (!zone.isSafe) {
       let hit: boolean = false;
 
-      zone.itemsContainer.children.forEach((item: Item) => {
+      zone.itemsContainer.children.forEach((item: SpriteItem) => {
         if (hitTestRectangle(this.player, item, true)) {
           this.player.x =
             item.x + item.width / 2 - this.player.width / 2;

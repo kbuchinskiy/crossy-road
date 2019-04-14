@@ -1,8 +1,7 @@
 
 import { getRandomInt } from './utils';
 import Zone from './Zone';
-import Item from './Item';
-import { SpriteProps } from './SpriteItem';
+import { SpriteItem ,SpriteProps } from './SpriteItem';
 
 export default class ZoneDynamic extends Zone {
   private readonly direction: number = Math.random() < 0.5 ? -1 : 1;
@@ -18,7 +17,7 @@ export default class ZoneDynamic extends Zone {
 
     setInterval(() => {
       setTimeout(() => {
-        const item = new Item(this.itemConfig);
+        const item = new SpriteItem(this.itemConfig);
 
         if (this.direction > 0) {
           item.x = -item.width -

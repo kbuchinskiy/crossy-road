@@ -1,5 +1,5 @@
 
-import AttemptItem from './AttemptItem';
+import { SpriteItem } from './SpriteItem';
 
 interface iAttemptsBar {
   readonly attemptsAmount: number,
@@ -16,7 +16,7 @@ export default class AttemptsBar extends PIXI.Container implements iAttemptsBar 
 
   private mountAttempts() {
     for (let i = 0; i < this.attemptsAmount; i++) {
-      const attemptItem = new AttemptItem({ image: this.attemptIcon, width: 10, height: 10 });
+      const attemptItem = new SpriteItem({ image: this.attemptIcon, width: 10, height: 10 });
       attemptItem.x = i * this.spaceBetween;
       this.addChild(attemptItem);
     }

@@ -1,8 +1,7 @@
 
 import { getRandomInt, hitTestRectangle } from './utils';
 import Zone from './Zone';
-import Item from './Item';
-import { SpriteProps } from './SpriteItem';
+import { SpriteItem, SpriteProps } from './SpriteItem';
 export default class ZoneStatic extends Zone {
   readonly itemsAmount: number;
   ;
@@ -16,7 +15,7 @@ export default class ZoneStatic extends Zone {
 
   private mountItems() {
     for (let i = 0; i < this.itemsAmount; i++) {
-      const item = new Item(this.itemConfig);
+      const item = new SpriteItem(this.itemConfig);
 
       item.x = getRandomInt(0, this.stageWidth - item.width);
 
