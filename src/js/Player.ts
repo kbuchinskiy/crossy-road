@@ -1,13 +1,10 @@
+import { SpriteProps, SpriteItem } from './SpriteItem';
 
-import { SpriteProps } from './utils';
-export default class Player extends PIXI.Sprite {
+export default class FinishLine extends SpriteItem {
   direction: number = 0;
   speed: number = 0;
 
   constructor(props: SpriteProps) {
-    super(PIXI.Texture.fromImage(props.image));
-
-    this.height = props.height;
-    this.width = props.width;
+    super(props);
   }
 }

@@ -1,24 +1,20 @@
 import Game from "./Game";
+import { zoneTypes } from "./ZoneFactory";
 
 const config = {
-  attempts: 3,
+  attempts: 5,
   zones: [
-    "tree",
-    "river",
-    "road",
-    "tree",
-    "road",
-    "river",
-    "road",
-    "tree",
-    "road",
-    "tree"
+    zoneTypes.Road,
+    zoneTypes.River,
+    zoneTypes.Road,
+    zoneTypes.Tree,
+    zoneTypes.Road,
+    zoneTypes.River,
+    zoneTypes.Road,
+    zoneTypes.Tree,
+    zoneTypes.Road,
+    zoneTypes.Tree
   ]
 };
 
-
-new Game(config.zones);
-
-// setTimeout(() => {
-//   crossyRoad.ba
-// }, 200);
+(<any>window).game = new Game(config.attempts, config.zones);

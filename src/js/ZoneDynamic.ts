@@ -1,13 +1,14 @@
 
-import { getRandomInt, SpriteProps } from './utils';
+import { getRandomInt } from './utils';
 import Zone from './Zone';
 import Item from './Item';
+import { SpriteProps } from './SpriteItem';
 
 export default class ZoneDynamic extends Zone {
   private readonly direction: number = Math.random() < 0.5 ? -1 : 1;
 
-  constructor(backgroundImage: string, isSafe: boolean, SpriteProps) {
-    super(backgroundImage, isSafe, SpriteProps);
+  constructor(backgroundImage: string, isSafe: boolean, stageWidth: number, spriteSettings: SpriteProps) {
+    super(backgroundImage, isSafe, stageWidth, spriteSettings);
 
     this.itemsBuilder();
     this.updateItems();

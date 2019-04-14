@@ -1,4 +1,3 @@
-
 import Zone from './Zone';
 import ZoneStatic from "./ZoneStatic";
 import ZoneDynamic from "./ZoneDynamic";
@@ -10,24 +9,24 @@ const carImage = require("../images/car.png");
 const raftImage = require("../images/raft.jpg");
 const treeImage = require("../images/tree.png");
 
-enum zoneTypes {
-  road = 'road',
-  river = 'river',
-  tree = 'tree'
+export enum zoneTypes {
+  Road,
+  River,
+  Tree
 }
-interface iFactory {
-  createZone(type: string): Zone;
+export interface iFactory {
+  createZone(type: zoneTypes, stageWidth): Zone;
 }
 
-export default class ZoneFactory implements iFactory {
-  createZone(type) {
+export class ZoneFactory implements iFactory {
+  createZone(type: zoneTypes, stageWidth: number) {
     switch (type) {
-      case zoneTypes.road:
-        return new ZoneDynamic(roadBg, true, { image: carImage, width: 64, height: 32 });
-      case zoneTypes.river:
-        return new ZoneDynamic(riverBg, true, { image: raftImage, width: 64, height: 32 });
-      case zoneTypes.tree:
-        return new ZoneStatic(treeBg, true, { image: treeImage, width: 30, height: 32 });
+      case zoneTypes.Road:
+        return new ZoneDynamic(roadBg, true, stageWidth, { image: carImage, width: 64, height: 32 });
+      case zoneTypes.River:
+        return new ZoneDynamic(riverBg, true, stageWidth, { image: raftImage, width: 64, height: 32 });
+      case zoneTypes.Tree:
+        return new ZoneStatic(treeBg, true, stageWidth, { image: treeImage, width: 30, height: 32 });
     }
   }
 }

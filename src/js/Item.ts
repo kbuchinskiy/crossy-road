@@ -1,9 +1,8 @@
 
-import { SpriteProps } from './utils';
-export default class Item extends PIXI.Sprite {
+import { SpriteProps, SpriteItem } from './SpriteItem';
+
+export default class Item extends SpriteItem {
   constructor(props: SpriteProps) {
-    super(PIXI.Texture.fromImage(props.image));
-    this.width = props.width;
-    this.height = props.height;
+    super(props);
   }
 }
