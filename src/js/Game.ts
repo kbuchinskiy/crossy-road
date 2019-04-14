@@ -29,6 +29,8 @@ enum keys {
 export default class Game {
   private app: PIXI.Application;
   private player: Player;
+  private playerPrevX: number = 0;
+  private playerPrevY: number = 0;
   private finishLine: FinishLine;
   private attemptsBar: AttemptsBar;
   private readonly stageWidth: number = 600;
@@ -67,28 +69,6 @@ export default class Game {
 
   }
 
-  private onKeyDownHandler(key) {
-
-    if (key.keyCode === keys.up) {
-      this.player.prevX = this.player.x;
-    }
-
-    if (key.keyCode === keys.down) {
-      this.player.prevX = this.player.x;
-    }
-
-    if (key.keyCode === keys.left) {
-      this.player.prevY = this.player.y;
-      this.player.prevX = this.player.x;
-    }
-
-    if (key.keyCode === keys.right) {
-      this.player.prevY = this.player.y;
-      this.player.prevX = this.player.x;
-    }
-
-  }
-
   private setup(): void {
     this.mountZones();
     this.mountFinishLine();
@@ -112,7 +92,7 @@ export default class Game {
 
   }
 
-  zonesHitHandler() {
+  private zonesHitHandler() {
     this.zones.forEach(zone => {
       if (hitTestRectangle(this.player, zone)) {
         if (zone instanceof ZoneDynamic) {
@@ -125,7 +105,7 @@ export default class Game {
 
   }
 
-  dynamicZoneHitHandler(zone: ZoneDynamic) {
+  private dynamicZoneHitHandler(zone: ZoneDynamic) {
     if (!zone.isSafe) {
       let hit: boolean = false;
 
@@ -151,28 +131,50 @@ export default class Game {
 
   }
 
-  staticZoneHitHandler(zone) {
+  private staticZoneHitHandler(zone) {
     zone.itemsContainer.children.forEach(item => {
       if (hitTestRectangle(this.player, item, true)) {
-        this.player.y = this.player.prevY;
-        this.player.x = this.player.prevX;
+        this.player.y = this.playerPrevY;
+        this.player.x = this.playerPrevX;
       }
     });
   }
 
-  loseAttempt() {
+  private loseAttempt() {
     this.attemptsBar.removeAttempt();
     this.checkAvailableAttempts();
     this.setPlayerInitialPosition();
   }
 
-  finishLineHitHandler() {
+  private finishLineHitHandler() {
     if (hitTestRectangle(this.player, this.finishLine)) {
       this.gameOver(true);
     }
   }
 
-  initSmoothMovements() {
+  private onKeyDownHandler(key) {
+
+    if (key.keyCode === keys.up) {
+      this.playerPrevX = this.player.x;
+    }
+
+    if (key.keyCode === keys.down) {
+      this.playerPrevX = this.player.x;
+    }
+
+    if (key.keyCode === keys.left) {
+      this.playerPrevY = this.player.y;
+      this.playerPrevX = this.player.x;
+    }
+
+    if (key.keyCode === keys.right) {
+      this.playerPrevY = this.player.y;
+      this.playerPrevX = this.player.x;
+    }
+
+  }
+
+  private initSmoothMovements() {
     const left = keyboard(keys.left),
       up = keyboard(keys.up),
       right = keyboard(keys.right),
@@ -241,7 +243,7 @@ export default class Game {
     location.reload();
   }
 
-  updateDynamicZones(): void {
+  private updateDynamicZones(): void {
     this.zones.forEach(zone => {
       if (zone instanceof ZoneDynamic) {
         zone.updateItems();
@@ -281,7 +283,7 @@ export default class Game {
     this.app.stage.addChild(this.attemptsBar);
   }
 
-  preventPlayerDisappearance() {
+  private preventPlayerDisappearance() {
     // top border touch
     if (this.player.y <= 0) {
       this.player.y = 0;
@@ -304,6 +306,8 @@ export default class Game {
     const playerY = this.stageHight - this.player.height;
     const playerX = this.stageWidth / 2 - this.player.width;
 
+    this.playerPrevX = playerX;
+    this.playerPrevY = playerY;
     this.player.position.set(playerX, playerY);
   }
 }
