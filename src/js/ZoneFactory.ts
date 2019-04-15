@@ -14,12 +14,10 @@ export enum zoneTypes {
   River,
   Tree
 }
-export interface iFactory {
-  createZone(type: zoneTypes, zoneWidth: number, zoneHeight: number): Zone;
-}
 
-export class ZoneFactory implements iFactory {
-  createZone(type, zoneWidth, zoneHeight) {
+
+export class ZoneFactory {
+  static createZone(type, zoneWidth, zoneHeight) {
     switch (type) {
       case zoneTypes.Road:
         return new ZoneDynamic(roadBg, zoneWidth, zoneHeight, true, { image: carImage, width: 64, height: 32 });

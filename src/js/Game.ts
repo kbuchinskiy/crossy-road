@@ -263,10 +263,8 @@ export default class Game implements iGame {
   }
 
   private mountZones(): void {
-    const zoneFactory = new ZoneFactory();
-
     this.zoneTypesList.forEach((type, index) => {
-      const zone = zoneFactory.createZone(type, this.stageWidth, this.stepY);
+      const zone = ZoneFactory.createZone(type, this.stageWidth, this.stepY);
       zone.y = index * this.stepY + 48;
       this.zones.push(zone);
 
