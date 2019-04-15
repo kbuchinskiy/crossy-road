@@ -17,7 +17,7 @@ export enum zoneTypes {
 
 
 export class ZoneFactory {
-  static createZone(type, zoneWidth, zoneHeight) {
+  static createZone(type, zoneWidth, zoneHeight): Zone {
     switch (type) {
       case zoneTypes.Road:
         return new ZoneDynamic(roadBg, zoneWidth, zoneHeight, true, { image: carImage, width: 64, height: 32 });

@@ -7,11 +7,11 @@ interface iAttemptsBar {
 }
 
 export default class AttemptsBar extends PIXI.Container implements iAttemptsBar {
-  private _attemptsLeft: number;
+  private attemptsLeft: number;
   constructor(readonly attemptsAmount: number, private readonly spaceBetween: number, private readonly attemptItemSetting: SpriteProps) {
     super();
     this.mountAttempts();
-    this._attemptsLeft = attemptsAmount;
+    this.attemptsLeft = attemptsAmount;
   }
 
   private mountAttempts() {
@@ -23,12 +23,12 @@ export default class AttemptsBar extends PIXI.Container implements iAttemptsBar 
   }
 
   get attemptsAvailable(): number {
-    return this._attemptsLeft;
+    return this.attemptsLeft;
   }
 
 
   removeAttempt() {
     this.children.pop();
-    this._attemptsLeft--;
+    this.attemptsLeft--;
   }
 }

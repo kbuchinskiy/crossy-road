@@ -38,13 +38,13 @@ export default class Game implements iGame {
   private playerPrevY: number = 0;
   private finishLine: FinishLine;
   private attemptsBar: AttemptsBar;
-  private readonly stageWidth: number = 600;
-  private readonly stageHight: number = 400;
-  private readonly stageColor: number = 0x999999;
-  private readonly stepY: number = 32;
-  private readonly finishLineY: number = 16;
-  private readonly attempsBarY: number = 0;
   private zones: Zone[] = [];
+  readonly stageWidth: number = 600;
+  readonly stageHight: number = 400;
+  readonly stageColor: number = 0x999999;
+  readonly stepY: number = 32;
+  readonly finishLineY: number = 16;
+  readonly attempsBarY: number = 0;
 
   constructor(readonly attemptsAmount, readonly zoneTypesList: zoneTypes[]) {
 
