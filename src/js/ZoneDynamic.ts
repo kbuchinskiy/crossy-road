@@ -5,6 +5,7 @@ import { SpriteItem, SpriteProps } from './SpriteItem';
 
 interface iZoneDynamic {
   readonly direction: number;
+  updateItems(): void
 }
 
 export default class ZoneDynamic extends Zone implements iZoneDynamic {
@@ -17,7 +18,7 @@ export default class ZoneDynamic extends Zone implements iZoneDynamic {
     this.updateItems();
   }
 
-  private itemsBuilder() {
+  private itemsBuilder(): void {
 
     setInterval(() => {
       setTimeout(() => {
@@ -40,7 +41,7 @@ export default class ZoneDynamic extends Zone implements iZoneDynamic {
     }, 3000);
   }
 
-  updateItems() {
+  updateItems(): void {
     this.itemsContainer.children.forEach((item: PIXI.Sprite) => {
       item.position.x += 2 * this.direction;
 

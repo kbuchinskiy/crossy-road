@@ -4,16 +4,18 @@ import Zone from './Zone';
 import { SpriteItem, SpriteProps } from './SpriteItem';
 
 interface iZoneStatic {
-  readonly itemsAmount: number;
+  readonly itemsAmount: number,
+  readonly zoneWidth: number,
+  readonly itemIntersectionDisabled: boolean
 }
 
 export default class ZoneStatic extends Zone implements iZoneStatic {
   readonly itemsAmount: number;
 
-  constructor(backgroundImage: string, readonly zoneWidth: number, readonly zoneHeight: number, readonly itemIntersectionEnabled: boolean = false, spriteSettings: SpriteProps) {
+  constructor(backgroundImage: string, readonly zoneWidth: number, readonly zoneHeight: number, readonly itemIntersectionDisabled: boolean = true, spriteSettings: SpriteProps) {
     super(backgroundImage, zoneWidth, zoneHeight, spriteSettings);
-    this.itemsAmount = getRandomInt(3, 6);
 
+    this.itemsAmount = getRandomInt(3, 6);
     this.mountItems();
   }
 
