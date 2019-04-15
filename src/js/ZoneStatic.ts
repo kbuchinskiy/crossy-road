@@ -6,8 +6,8 @@ export default class ZoneStatic extends Zone {
   readonly itemsAmount: number;
   ;
 
-  constructor(backgroundImage: string, readonly stageWidth, readonly itemIntersectionEnabled: boolean = false, spriteSettings: SpriteProps) {
-    super(backgroundImage, stageWidth, spriteSettings);
+  constructor(backgroundImage: string, readonly zoneWidth: number, readonly zoneHeight: number, readonly itemIntersectionEnabled: boolean = false, spriteSettings: SpriteProps) {
+    super(backgroundImage, zoneWidth, zoneHeight, spriteSettings);
     this.itemsAmount = getRandomInt(3, 6);
 
     this.mountItems();
@@ -17,7 +17,7 @@ export default class ZoneStatic extends Zone {
     for (let i = 0; i < this.itemsAmount; i++) {
       const item = new SpriteItem(this.itemConfig);
 
-      item.x = getRandomInt(0, this.stageWidth - item.width);
+      item.x = getRandomInt(0, this.zoneWidth - item.width);
 
       if (!this.itemsContainer.children.some(child => hitTestRectangle(child, item, true))) {
         this.itemsContainer.addChild(item);

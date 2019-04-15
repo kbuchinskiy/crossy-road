@@ -266,7 +266,7 @@ export default class Game implements iGame {
     const zoneFactory = new ZoneFactory();
 
     this.zoneTypesList.forEach((type, index) => {
-      const zone = zoneFactory.createZone(type, this.stageWidth);
+      const zone = zoneFactory.createZone(type, this.stageWidth, this.stepY);
       zone.y = index * this.stepY + 48;
       this.zones.push(zone);
 

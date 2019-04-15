@@ -15,18 +15,18 @@ export enum zoneTypes {
   Tree
 }
 export interface iFactory {
-  createZone(type: zoneTypes, stageWidth): Zone;
+  createZone(type: zoneTypes, zoneWidth: number, zoneHeight: number): Zone;
 }
 
 export class ZoneFactory implements iFactory {
-  createZone(type: zoneTypes, stageWidth: number) {
+  createZone(type, zoneWidth, zoneHeight) {
     switch (type) {
       case zoneTypes.Road:
-        return new ZoneDynamic(roadBg, stageWidth, true, { image: carImage, width: 64, height: 32 });
+        return new ZoneDynamic(roadBg, zoneWidth, zoneHeight, true, { image: carImage, width: 64, height: 32 });
       case zoneTypes.River:
-        return new ZoneDynamic(riverBg, stageWidth, false, { image: raftImage, width: 64, height: 32 });
+        return new ZoneDynamic(riverBg, zoneWidth, zoneHeight, false, { image: raftImage, width: 64, height: 32 });
       case zoneTypes.Tree:
-        return new ZoneStatic(treeBg, stageWidth, true, { image: treeImage, width: 30, height: 32 });
+        return new ZoneStatic(treeBg, zoneWidth, zoneHeight, true, { image: treeImage, width: 30, height: 32 });
     }
   }
 }
