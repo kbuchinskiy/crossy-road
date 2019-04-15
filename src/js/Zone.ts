@@ -1,8 +1,8 @@
 
 import { SpriteProps } from './SpriteItem';
 interface iZone {
-  readonly zoneHeight: number,
   readonly zoneWidth: number,
+  readonly zoneHeight: number,
   readonly background: PIXI.Sprite,
   itemConfig: SpriteProps
 }

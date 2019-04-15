@@ -2,9 +2,13 @@
 import { getRandomInt, hitTestRectangle } from './utils';
 import Zone from './Zone';
 import { SpriteItem, SpriteProps } from './SpriteItem';
-export default class ZoneStatic extends Zone {
+
+interface iZoneStatic {
   readonly itemsAmount: number;
-  ;
+}
+
+export default class ZoneStatic extends Zone implements iZoneStatic {
+  readonly itemsAmount: number;
 
   constructor(backgroundImage: string, readonly zoneWidth: number, readonly zoneHeight: number, readonly itemIntersectionEnabled: boolean = false, spriteSettings: SpriteProps) {
     super(backgroundImage, zoneWidth, zoneHeight, spriteSettings);

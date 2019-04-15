@@ -3,8 +3,12 @@ import { getRandomInt } from './utils';
 import Zone from './Zone';
 import { SpriteItem, SpriteProps } from './SpriteItem';
 
-export default class ZoneDynamic extends Zone {
-  private readonly direction: number = Math.random() < 0.5 ? -1 : 1;
+interface iZoneDynamic {
+  readonly direction: number;
+}
+
+export default class ZoneDynamic extends Zone implements iZoneDynamic {
+  readonly direction: number = Math.random() < 0.5 ? -1 : 1;
 
   constructor(backgroundImage: string, zoneWidth: number, zoneHeight: number, readonly isSafe, spriteSettings: SpriteProps) {
     super(backgroundImage, zoneWidth, zoneHeight, spriteSettings);
@@ -53,3 +57,4 @@ export default class ZoneDynamic extends Zone {
   }
 
 }
+
