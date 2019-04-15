@@ -21,5 +21,4 @@ export default class Player extends SpriteItem implements iPlayer {
     this.x += this.vx;
     this.y += this.vy;
   }
-
 }

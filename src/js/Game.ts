@@ -67,11 +67,6 @@ export default class Game implements iGame {
         heartImage
       ])
       .load(() => this.setup());
-
-    document.addEventListener("keydown", (key) => {
-      this.onKeyDownHandler(key);
-    });
-
   }
 
   private setup(): void {
@@ -80,7 +75,7 @@ export default class Game implements iGame {
     this.mountAttemptsBar();
     this.mountPlayer(playerImage);
 
-
+    this.enablePlayerPrevPositionRecording();
     this.initSmoothMovements();
 
     this.app.ticker.add(() => this.gameLoop());
@@ -138,8 +133,10 @@ export default class Game implements iGame {
   private staticZoneHitHandler(zone): void {
     zone.itemsContainer.children.forEach(item => {
       if (hitTestRectangle(this.player, item, true)) {
-        this.player.y = this.playerPrevY;
-        this.player.x = this.playerPrevX;
+        if (zone.itemIntersectionDisabled) {
+          this.player.y = this.playerPrevY;
+          this.player.x = this.playerPrevX;
+        }
       }
     });
   }
@@ -156,26 +153,25 @@ export default class Game implements iGame {
     }
   }
 
-  private onKeyDownHandler(key): void {
-
-    if (key.keyCode === keys.up) {
-      this.playerPrevX = this.player.x;
-    }
-
-    if (key.keyCode === keys.down) {
-      this.playerPrevX = this.player.x;
-    }
-
-    if (key.keyCode === keys.left) {
-      this.playerPrevY = this.player.y;
-      this.playerPrevX = this.player.x;
-    }
-
-    if (key.keyCode === keys.right) {
-      this.playerPrevY = this.player.y;
-      this.playerPrevX = this.player.x;
-    }
-
+  private enablePlayerPrevPositionRecording(): void {
+    document.addEventListener("keydown", (key) => {
+      if (key.keyCode === keys.up) {
+        this.playerPrevX = this.player.x;
+        this.playerPrevY = this.player.y;
+      }
+      if (key.keyCode === keys.down) {
+        this.playerPrevX = this.player.x;
+        this.playerPrevY = this.player.y;
+      }
+      if (key.keyCode === keys.left) {
+        this.playerPrevY = this.player.y;
+        this.playerPrevX = this.player.x;
+      }
+      if (key.keyCode === keys.right) {
+        this.playerPrevY = this.player.y;
+        this.playerPrevX = this.player.x;
+      }
+    });
   }
 
   private initSmoothMovements(): void {
