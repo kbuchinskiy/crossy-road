@@ -1,9 +1,15 @@
-export { hitTestRectangle, keyboard, getRandomInt };
 
-function hitTestRectangle(r1, r2, yHitDisabled) {
-   
+export { getRandomInt, hitTestRectangle, keyboard };
+
+function getRandomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+function hitTestRectangle(r1, r2, yHitDisabled?: boolean): boolean {
+
   //Define the variables we'll need to calculate
-  let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+  let hit: boolean, combinedHalfWidths: number, combinedHalfHeights: number, vx: number, vy: number;
 
   //hit will determine whether there's a collision
   hit = false;
@@ -32,7 +38,7 @@ function hitTestRectangle(r1, r2, yHitDisabled) {
   if (Math.abs(vx) < combinedHalfWidths) {
     //A collision might be occuring. Check for a collision on the y axis
     if (!yHitDisabled) {
-      
+
       if (Math.abs(vy) < combinedHalfHeights) {
         //There's definitely a collision happening
         hit = true;
@@ -53,7 +59,7 @@ function hitTestRectangle(r1, r2, yHitDisabled) {
 }
 
 function keyboard(keyCode) {
-  let key = {};
+  let key: any = {};
   key.code = keyCode;
   key.isDown = false;
   key.isUp = true;
@@ -61,6 +67,7 @@ function keyboard(keyCode) {
   key.release = undefined;
   //The `downHandler`
   key.downHandler = event => {
+    
     if (event.keyCode === key.code) {
       if (key.isUp && key.press) key.press();
       key.isDown = true;
@@ -83,8 +90,4 @@ function keyboard(keyCode) {
   window.addEventListener("keydown", key.downHandler.bind(key), false);
   window.addEventListener("keyup", key.upHandler.bind(key), false);
   return key;
-}
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
