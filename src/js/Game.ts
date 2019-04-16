@@ -27,11 +27,23 @@ enum keys {
 }
 
 interface iGame {
+  readonly stageWidth: number,
+  readonly stageHight: number,
+  readonly stageColor: number,
+  readonly stepY: number,
+  readonly finishLineY: number,
+  readonly attemptsBarY: number,
   gameOver(),
   setPlayerInitialPosition()
 }
 
-export default class Game implements iGame {
+export interface gameConfig {
+  attempts,
+  zones,
+  level
+}
+
+export class Game implements iGame {
   private app: PIXI.Application;
   private player: Player;
   private playerPrevX: number = 0;
@@ -39,14 +51,20 @@ export default class Game implements iGame {
   private finishLine: FinishLine;
   private attemptsBar: AttemptsBar;
   private zones: Zone[] = [];
+  private attemptsAmount: number;
+  private zoneTypesList: zoneTypes[];
+  private difficulty: number;
+
   readonly stageWidth: number = 600;
   readonly stageHight: number = 400;
   readonly stageColor: number = 0x999999;
   readonly stepY: number = 32;
   readonly finishLineY: number = 16;
-  readonly attempsBarY: number = 0;
+  readonly attemptsBarY: number = 0;
 
-  constructor(readonly attemptsAmount, readonly zoneTypesList: zoneTypes[]) {
+  constructor(config: gameConfig) {
+
+    this.configHandler(config);
 
     this.app = new PIXI.Application(this.stageWidth, this.stageHight, {
       backgroundColor: this.stageColor
@@ -67,6 +85,26 @@ export default class Game implements iGame {
         heartImage
       ])
       .load(() => this.setup());
+  }
+
+  configHandler(config: gameConfig) {
+    if (config.attempts > 0 && config.attempts <= 10) {
+      this.attemptsAmount = config.attempts;
+    } else {
+      throw new Error("Available attempts value is 1-10");
+    }
+
+    if (config.level > 1 && config.level <= 5) {
+      this.difficulty = config.level;
+    } else {
+      throw new Error("Available level value is 1-5");
+    }
+
+    if (config.zones.length === 10) {
+      this.zoneTypesList = config.zones;
+    } else {
+      throw new Error("Game should contain 10 zones");
+    }
   }
 
   private setup(): void {
@@ -101,7 +139,6 @@ export default class Game implements iGame {
         }
       }
     })
-
   }
 
   private dynamicZoneHitHandler(zone: ZoneDynamic): void {
@@ -259,8 +296,10 @@ export default class Game implements iGame {
   }
 
   private mountZones(): void {
+    const zoneFactory = new ZoneFactory();
+
     this.zoneTypesList.forEach((type, index) => {
-      const zone = ZoneFactory.createZone(type, this.stageWidth, this.stepY);
+      const zone = zoneFactory.createZone(type, this.stageWidth, this.stepY, this.difficulty);
       zone.y = index * this.stepY + 48;
       this.zones.push(zone);
 
@@ -277,7 +316,7 @@ export default class Game implements iGame {
 
   private mountAttemptsBar() {
     this.attemptsBar = new AttemptsBar(this.attemptsAmount, 15, { width: 10, height: 10, image: heartImage });
-    this.attemptsBar.y = this.attempsBarY;
+    this.attemptsBar.y = this.attemptsBarY;
     this.app.stage.addChild(this.attemptsBar);
   }
 

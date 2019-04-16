@@ -1,7 +1,8 @@
-import Game from "./Game";
+import { Game, gameConfig } from "./Game";
 import { zoneTypes } from "./ZoneFactory";
 
-const config = {
+const config: gameConfig = {
+  level: 3,
   attempts: 3,
   zones: [
     zoneTypes.Road,
@@ -17,4 +18,4 @@ const config = {
   ]
 };
 
-(<any>window).game = new Game(config.attempts, config.zones);
+(<any>window).game = new Game(config);

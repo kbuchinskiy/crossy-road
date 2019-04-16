@@ -15,14 +15,13 @@ export enum zoneTypes {
   Tree
 }
 
-
 export class ZoneFactory {
-  static createZone(type, zoneWidth, zoneHeight): Zone {
+   createZone(type, zoneWidth, zoneHeight, speed): Zone {
     switch (type) {
       case zoneTypes.Road:
-        return new ZoneDynamic(roadBg, zoneWidth, zoneHeight, true, { image: carImage, width: 64, height: 32 });
+        return new ZoneDynamic(roadBg, zoneWidth, zoneHeight, true, speed, { image: carImage, width: 64, height: 32 });
       case zoneTypes.River:
-        return new ZoneDynamic(riverBg, zoneWidth, zoneHeight, false, { image: raftImage, width: 64, height: 32 });
+        return new ZoneDynamic(riverBg, zoneWidth, zoneHeight, false, speed, { image: raftImage, width: 64, height: 32 });
       case zoneTypes.Tree:
         return new ZoneStatic(treeBg, zoneWidth, zoneHeight, true, { image: treeImage, width: 30, height: 32 });
     }

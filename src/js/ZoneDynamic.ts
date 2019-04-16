@@ -5,13 +5,14 @@ import { SpriteItem, SpriteProps } from './SpriteItem';
 
 interface iZoneDynamic {
   readonly direction: number;
+  readonly speed: number;
   updateItems(): void
 }
 
 export default class ZoneDynamic extends Zone implements iZoneDynamic {
   readonly direction: number = Math.random() < 0.5 ? -1 : 1;
 
-  constructor(backgroundImage: string, zoneWidth: number, zoneHeight: number, readonly isSafe, spriteSettings: SpriteProps) {
+  constructor(backgroundImage: string, zoneWidth: number, zoneHeight: number, readonly isSafe, readonly speed: number, spriteSettings: SpriteProps) {
     super(backgroundImage, zoneWidth, zoneHeight, spriteSettings);
 
     this.itemsBuilder();
@@ -43,7 +44,7 @@ export default class ZoneDynamic extends Zone implements iZoneDynamic {
 
   updateItems(): void {
     this.itemsContainer.children.forEach((item: PIXI.Sprite) => {
-      item.position.x += 2 * this.direction;
+      item.position.x += this.speed * this.direction;
 
       if (this.direction > 0) {
         if (item.position.x > 600) {
