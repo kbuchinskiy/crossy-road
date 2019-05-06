@@ -33,14 +33,14 @@ interface iGame {
   readonly stepY: number,
   readonly finishLineY: number,
   readonly attemptsBarY: number,
-  gameOver(),
-  setPlayerInitialPosition()
+  gameOver(): void,
+  setPlayerInitialPosition(): void
 }
 
 export interface gameConfig {
-  attempts,
-  zones,
-  level
+  attempts: number,
+  zones: zoneTypes[],
+  level: number
 }
 
 export class Game implements iGame {
@@ -296,10 +296,8 @@ export class Game implements iGame {
   }
 
   private mountZones(): void {
-    const zoneFactory = new ZoneFactory();
-
     this.zoneTypesList.forEach((type, index) => {
-      const zone = zoneFactory.createZone(type, this.stageWidth, this.stepY, this.difficulty);
+      const zone = ZoneFactory.createZone(type, this.stageWidth, this.stepY, this.difficulty);
       zone.y = index * this.stepY + 48;
       this.zones.push(zone);
 
