@@ -18,4 +18,8 @@ const config: gameConfig = {
   ]
 };
 
-(<any>window).game = new Game(config);
+declare global {
+  interface Window { game: Game; }
+}
+
+window.game = new Game(config);
