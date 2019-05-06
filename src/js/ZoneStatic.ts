@@ -20,14 +20,22 @@ export default class ZoneStatic extends Zone implements iZoneStatic {
   }
 
   private mountItems() {
-    for (let i = 0; i < this.itemsAmount; i++) {
-      const item = new SpriteItem(this.itemConfig);
+    let itemHit: boolean = false;
+    let itemsToMountAmount: number = this.itemsAmount;
 
+    do {
+      const item: PIXI.Sprite = new SpriteItem(this.itemConfig);
+      
       item.x = getRandomInt(0, this.zoneWidth - item.width);
 
-      if (!this.itemsContainer.children.some(child => hitTestRectangle(child, item, true))) {
+      itemHit = this.itemsContainer.children.some(child => hitTestRectangle(child, item, true));
+
+      if (!itemHit) {
         this.itemsContainer.addChild(item);
+        itemsToMountAmount--;
       }
-    }
+
+    } while (itemsToMountAmount > 0);
+
   }
 }
